@@ -22,6 +22,7 @@ import {
   getActivities,
   subscribeToActivities,
 } from "../integration/activityStore";
+import { getServiceRequestAudit } from "../api/client";
 
 const requestTimeline = [
   {
@@ -116,6 +117,19 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
 
     return unsubscribe;
   }, []);
+  useEffect(() => {
+    if (!request?.requestId) {
+      return;
+    }
+
+    getServiceRequestAudit(request.requestId)
+      .then((response) => {
+        setActivities(response.data.audit_history || []);
+      })
+      .catch((error) => {
+        console.error("Failed to load backend audit history:", error);
+      });
+  }, [request?.requestId]);
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -129,20 +143,20 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
-                Request REQ-1024
+                Request {request?.requestId || "Unknown"}
               </p>
               <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
-                AC Unit Not Cooling
+                {request?.title || request?.fault_type || "Maintenance Request"}
               </h1>
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Maintenance request · HVAC
+                Maintenance request · {request?.category || request?.required_skill || "General"}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge status={request?.status || "Assigned"} />
               <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                High priority
+                {request?.priority || "Medium"} priority
               </span>
             </div>
           </div>
@@ -168,16 +182,18 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
 
               <dl className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
                 <DetailItem icon={Wrench} label="Category">
-                  HVAC
+                  {request?.category || request?.required_skill || "General"}
                 </DetailItem>
                 <DetailItem icon={CalendarDays} label="Created date">
-                  October 7, 2026 · 9:14 AM
+                  {request?.created_at
+                    ? new Date(request.created_at).toLocaleString()
+                    : "Unknown date"}
                 </DetailItem>
                 <DetailItem icon={MapPin} label="Location">
-                  Building A, Floor 2
+                  {request?.location || request?.site_id || "Unknown location"}
                 </DetailItem>
                 <DetailItem icon={Building2} label="Requested by">
-                  Facilities Department
+                  {request?.requesterName || request?.requester || "Facilities Department"}
                 </DetailItem>
               </dl>
 
@@ -186,8 +202,7 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
                   Description
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-                  The AC unit in the second-floor meeting room is not cooling
-                  properly.
+                  {request?.description || request?.fault_type || "Maintenance request details unavailable."}
                 </p>
               </div>
             </section>
@@ -265,28 +280,32 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
                 </h2>
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-blue-700 ring-1 ring-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:ring-blue-900">
-                    AK
+                    {request?.technicianInitials ||
+                      (request?.assigned_technician_id === "T02" ? "AM" : "—")}
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-base font-semibold text-slate-900 dark:text-slate-100">
-                      Arun Kumar
+                      {request?.technicianName ||
+                        (request?.assigned_technician_id === "T02"
+                          ? "Arjun Mehta"
+                          : request?.technician || request?.assigned_technician_id || "Unassigned")}
                     </p>
                     <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-                      HVAC Technician
+                      {request?.technicianRole || `${request?.category || request?.required_skill || "Maintenance"} Technician`}
                     </p>
                   </div>
                   <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    Available
+                    {request?.technicianAvailability || "Available"}
                   </span>
                 </div>
 
                 <div className="mt-5 space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800">
                   <DetailItem icon={Wrench} label="Skill">
-                    HVAC
+                    {request?.category || request?.required_skill || "General"}
                   </DetailItem>
                   <DetailItem icon={MapPin} label="Current location">
-                    Building A
+                    {request?.technicianLocation || "Unknown location"}
                   </DetailItem>
                 </div>
 
@@ -295,7 +314,7 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
                     Assignment reason
                   </p>
                   <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                    Best match based on HVAC skill, availability and location.
+                    Best match based on {request?.category || request?.required_skill || "maintenance"} skill, availability and location.
                   </p>
                 </div>
               </div>
@@ -320,7 +339,9 @@ function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
 
             <div className="flex items-center gap-2 px-1 text-xs text-slate-400 dark:text-slate-500">
               <Clock3 aria-hidden="true" className="h-3.5 w-3.5" />
-              Last updated October 7, 2026
+              {request?.updated_at
+                ? new Date(request.updated_at).toLocaleString()
+                : "Unknown date"}
             </div>
           </aside>
         </div>

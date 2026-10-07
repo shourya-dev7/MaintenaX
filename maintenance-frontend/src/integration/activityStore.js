@@ -9,8 +9,14 @@ export const addActivity = (activity) => {
   });
 };
 
-export const getActivities = () => {
-  return [...activities];
+export const getActivities = (requestId) => {
+  if (!requestId) {
+    return [...activities];
+  }
+
+  return activities.filter(
+    (activity) => activity.requestId === requestId,
+  );
 };
 
 export const subscribeToActivities = (listener) => {

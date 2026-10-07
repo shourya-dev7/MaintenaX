@@ -10,6 +10,11 @@ import TechnicianTasks from "./pages/TechnicianTasks";
 import SupervisorVerification from "./pages/SupervisorVerification";
 import Reassignment from "./pages/Reassignment";
 import { initialRecords, initialTasks } from "./data/mockMaintenanceData";
+import {
+  getServiceRequests,
+  getServiceRequest,
+  mapBackendRequestToTask,
+} from "./api/client";
 import Login from "./pages/Login";
 import RoleSelect from "./pages/RoleSelect";
 import ServiceRequests from "./pages/ServiceRequests";
@@ -54,6 +59,28 @@ function App() {
     loadMockEvents();
 
     return cleanup;
+  }, []);
+
+  useEffect(() => {
+    getServiceRequests()
+      .then((response) => {
+        const backendTasks = response.data.map(mapBackendRequestToTask);
+
+        setTasks((currentTasks) => {
+          const existingIds = new Set(
+            currentTasks.map((task) => task.requestId),
+          );
+
+          const newTasks = backendTasks.filter(
+            (task) => !existingIds.has(task.requestId),
+          );
+
+          return [...newTasks, ...currentTasks];
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to load backend service requests:", error);
+      });
   }, []);
 
   function handleLogin(username, password, role) {
@@ -404,8 +431,31 @@ function App() {
         onBack={() => setCurrentPage("dashboard")}
         onLogout={handleLogout}
         userName={currentUser}
-        onOpenRequest={(request) => {
-          setSelectedRequest(request);
+        onOpenRequest={async (request) => {
+          try {
+            const response = await getServiceRequest(request.requestId);
+            const backendRequest = response.data;
+
+            setSelectedRequest({
+              ...request,
+              ...backendRequest,
+              requestId: backendRequest.id,
+              title: backendRequest.title || backendRequest.fault_type,
+              category: backendRequest.required_skill,
+              priority: backendRequest.priority,
+              status: backendRequest.status,
+              location: backendRequest.site_id,
+              requesterName: "Facilities Department",
+              technicianName:
+                backendRequest.assigned_technician_id === "T02"
+                  ? "Arjun Mehta"
+                  : backendRequest.assigned_technician_id || "Unassigned",
+            });
+          } catch (error) {
+            console.error("Failed to load request details:", error);
+            setSelectedRequest(request);
+          }
+
           setRequestReturnPage("technician-tasks");
           setCurrentPage("request-details");
         }}

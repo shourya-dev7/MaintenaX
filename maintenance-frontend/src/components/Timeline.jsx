@@ -26,10 +26,20 @@ function Timeline({ events = [] }) {
           technicianName,
           message,
           status,
+          action,
+          technician_id,
+          remarks,
+          created_at,
         } = event;
+
+        const eventType = type || action;
+        const eventTimestamp = timestamp || created_at;
+        const eventMessage = message || remarks;
+        const eventTechnician = technicianName || technician_id;
 
         const titleMap = {
           assignment_created: "Technician Assigned",
+          INTELLIGENCE_AUTO_ASSIGNED: "Technician Assigned",
           assignment_changed: "Assignment Changed",
           technician_dropped: "Technician Unavailable",
           part_unavailable: "Part Unavailable",
@@ -37,9 +47,9 @@ function Timeline({ events = [] }) {
           job_completed: "Work Completed",
         };
 
-        const title = titleMap[type] ?? type;
-        const responsiblePerson = technicianName;
-        const description = message;
+        const title = titleMap[eventType] ?? eventType;
+        const responsiblePerson = eventTechnician;
+        const description = eventMessage;
 
         const Icon = eventIcons[title] ?? CircleCheck;
         const isLast = index === events.length - 1;
@@ -58,7 +68,7 @@ function Timeline({ events = [] }) {
                 <h3 className="text-sm font-semibold text-slate-800">
                   {title}
                 </h3>
-                <time className="text-xs text-slate-500">{timestamp}</time>
+                <time className="text-xs text-slate-500">{eventTimestamp}</time>
               </div>
               {responsiblePerson && (
                 <p className="mt-1 text-xs font-medium text-slate-600">
