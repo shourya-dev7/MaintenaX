@@ -107,7 +107,7 @@ function DetailItem({ icon: Icon, label, children }) {
   );
 }
 
-function RequestDetails() {
+function RequestDetails({ request, onBack, onNavigate, onStatusChange }) {
   const [activities, setActivities] = useState(getActivities());
   useEffect(() => {
     const unsubscribe = subscribeToActivities((updatedActivities) => {
@@ -119,13 +119,11 @@ function RequestDetails() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <a
-          href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+        <button type="button" onClick={onBack} className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
         >
           <ArrowLeft aria-hidden="true" className="h-4 w-4" />
           Back to Dashboard
-        </a>
+        </button>
 
         <header className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 sm:p-7">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
@@ -141,7 +139,7 @@ function RequestDetails() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <StatusBadge status="Assigned" />
+              <StatusBadge status={request?.status || "Assigned"} />
               <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
                 High priority
@@ -232,6 +230,13 @@ function RequestDetails() {
                   <button
                     key={label}
                     type="button"
+                    onClick={() => {
+
+                      if (label === "Accept Assignment") onStatusChange?.("Assigned");
+                      if (label === "Start Work") onStatusChange?.("In Progress");
+                      if (label === "Mark Work Completed") onStatusChange?.("Pending Verification");
+                      if (label === "Request Reassignment") onNavigate?.("reassignment");
+                    }}
                     className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-4 ${className}`}
                   >
                     <Icon aria-hidden="true" className="h-4 w-4" />
@@ -325,3 +330,8 @@ function RequestDetails() {
 }
 
 export default RequestDetails;
+
+
+
+
+

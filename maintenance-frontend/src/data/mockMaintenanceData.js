@@ -1,0 +1,81 @@
+export const initialTasks = [
+  {
+    requestId: "REQ-1024",
+    title: "AC Unit Not Cooling",
+    location: "Building A, Floor 2",
+    category: "HVAC",
+    priority: "High",
+    status: "Assigned",
+    requester: "Facilities Department",
+    assignedDate: "Today",
+  },
+  {
+    requestId: "REQ-1021",
+    title: "Water Leakage",
+    location: "Block B, Ground Floor",
+    category: "Plumbing",
+    priority: "Critical",
+    status: "In Progress",
+    requester: "Administration",
+    assignedDate: "Today",
+  },
+  {
+    requestId: "REQ-1018",
+    title: "Electrical Panel Inspection",
+    location: "Workshop",
+    category: "Electrical",
+    priority: "Medium",
+    status: "Completed",
+    requester: "Operations",
+    assignedDate: "Yesterday",
+  },
+  {
+    requestId: "REQ-1015",
+    title: "Generator Inspection",
+    location: "Facility 1",
+    category: "Mechanical",
+    priority: "Low",
+    status: "Completed",
+    requester: "Facilities",
+    assignedDate: "Yesterday",
+  },
+];
+
+export const initialRecords = [
+  {
+    requestId: "REQ-1024",
+    title: "AC Unit Not Cooling",
+    location: "Building A, Floor 2",
+    category: "HVAC",
+    priority: "High",
+    technician: "Arun Kumar",
+    status: "Pending Verification",
+    completedDate: "Today",
+    completionNotes:
+      "Replaced faulty capacitor and tested cooling performance. Unit is operating normally.",
+  },
+  {
+    requestId: "REQ-1021",
+    title: "Water Leakage",
+    location: "Block B, Ground Floor",
+    category: "Plumbing",
+    priority: "Critical",
+    technician: "Priya Sharma",
+    status: "Pending Verification",
+    completedDate: "Today",
+    completionNotes:
+      "Replaced damaged pipe section and tested the connection for leakage.",
+  },
+  {
+    requestId: "REQ-1018",
+    title: "Electrical Panel Inspection",
+    location: "Workshop",
+    category: "Electrical",
+    priority: "Medium",
+    technician: "Arun Kumar",
+    status: "Verified",
+    completedDate: "Yesterday",
+    completionNotes:
+      "Inspected panel connections and tightened loose terminals.",
+  },
+];

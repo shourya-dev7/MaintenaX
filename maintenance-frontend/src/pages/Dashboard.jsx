@@ -1,3 +1,4 @@
+import TechnicianLiveMap from "../components/TechnicianLiveMap";
 import { useLayoutEffect, useState } from "react";
 import {
   Activity,
@@ -57,8 +58,10 @@ const requests = [
     requestId: "MX-1048",
     title: "AC Unit Not Cooling",
     location: "Building A",
+    category: "HVAC",
     priority: "High",
     technician: "Jordan Lee",
+    requester: "Facilities Department",
     status: "In Progress",
     createdDate: "Oct 7, 2026",
   },
@@ -66,8 +69,10 @@ const requests = [
     requestId: "MX-1047",
     title: "Water Leakage",
     location: "Block B",
+    category: "Plumbing",
     priority: "Urgent",
     technician: "Priya Sharma",
+    requester: "Administration",
     status: "Assigned",
     createdDate: "Oct 7, 2026",
   },
@@ -75,8 +80,10 @@ const requests = [
     requestId: "MX-1046",
     title: "Elevator Maintenance",
     location: "Main Building",
+    category: "Mechanical",
     priority: "Medium",
     technician: "Marcus Chen",
+    requester: "Operations",
     status: "Pending Verification",
     createdDate: "Oct 6, 2026",
   },
@@ -84,8 +91,10 @@ const requests = [
     requestId: "MX-1045",
     title: "Electrical Panel Issue",
     location: "Workshop",
+    category: "Electrical",
     priority: "High",
     technician: "Avery Patel",
+    requester: "Maintenance Department",
     status: "New",
     createdDate: "Oct 6, 2026",
   },
@@ -93,8 +102,10 @@ const requests = [
     requestId: "MX-1044",
     title: "Generator Inspection",
     location: "Facility 1",
+    category: "Mechanical",
     priority: "Low",
     technician: "Sam Rivera",
+    requester: "Facilities",
     status: "Completed",
     createdDate: "Oct 5, 2026",
   },
@@ -147,7 +158,16 @@ const recentActivity = [
 
 const THEME_STORAGE_KEY = "maintenax-theme";
 
-function Dashboard({ onCreateRequest, onRequestDetails }) {
+function Dashboard({
+  onCreateRequest,
+  onRequestDetails,
+  onNavigate,
+  onLogout,
+  userName,
+}) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showLiveGraph, setShowLiveGraph] = useState(false);
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
     if (savedTheme === "dark" || savedTheme === "light") {
@@ -172,11 +192,22 @@ function Dashboard({ onCreateRequest, onRequestDetails }) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-200 [&_*]:transition-colors [&_*]:duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="fixed inset-y-0 left-0 z-20">
-        <Sidebar />
+        <Sidebar
+          activePage="dashboard"
+          onNavigate={onNavigate}
+          onLogout={onLogout}
+          userName={userName}
+        />
       </div>
 
       <div className="ml-64 min-h-screen max-sm:ml-16">
-        <Header isDarkMode={isDarkMode} onToggleTheme={toggleTheme} />
+        <Header
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+          onNavigate={onNavigate}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
 
         <main className="mx-auto max-w-[1600px] space-y-8 p-8 max-lg:p-6 max-sm:p-4">
           <section aria-label="Request statistics">
@@ -190,10 +221,19 @@ function Dashboard({ onCreateRequest, onRequestDetails }) {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-3">
-                <span className="hidden items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:inline-flex">
-                  <Activity aria-hidden="true" className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <button
+                  type="button"
+                  onClick={() => setShowLiveGraph(true)}
+                  title="Open live servicing graph"
+                  aria-label="Open live servicing graph"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                >
+                  <Activity
+                    aria-hidden="true"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400"
+                  />
                   Live overview
-                </span>
+                </button>
                 <button
                   type="button"
                   onClick={onCreateRequest}
@@ -211,6 +251,15 @@ function Dashboard({ onCreateRequest, onRequestDetails }) {
               ))}
             </div>
           </section>
+
+          <div id="live-field-overview">
+  <div id="live-field-overview">
+    <TechnicianLiveMap
+      onShowGraph={(value = true) => setShowLiveGraph(value)}
+      showGraph={showLiveGraph}
+    />
+  </div>
+</div>
 
           <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(300px,0.9fr)]">
             <section aria-labelledby="recent-requests-heading" className="min-w-0">
@@ -236,7 +285,13 @@ function Dashboard({ onCreateRequest, onRequestDetails }) {
               </div>
 
               <div className="space-y-3">
-                {requests.map((request) => (
+                {requests.filter((request) => {
+                  const query = searchQuery.trim().toLowerCase();
+                  if (!query) return true;
+                  return Object.values(request).some((value) =>
+                    String(value).toLowerCase().includes(query),
+                  );
+                }).map((request) => (
                   <RequestCard
                     key={request.requestId}
                     {...request}
@@ -351,3 +406,11 @@ function Dashboard({ onCreateRequest, onRequestDetails }) {
 }
 
 export default Dashboard;
+
+
+
+
+
+
+
+

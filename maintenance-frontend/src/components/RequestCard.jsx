@@ -2,6 +2,8 @@ import {
   CalendarDays,
   MapPin,
   UserRound,
+  Tag,
+  Building2,
 } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 
@@ -22,6 +24,8 @@ function RequestCard({
   assignedTechnician,
   status,
   createdDate,
+  category,
+  requester,
   onClick,
 }) {
   const displayId = requestId ?? id;
@@ -47,6 +51,27 @@ function RequestCard({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+        {category && (
+          <span className="inline-flex items-center gap-1.5">
+            <Tag
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500"
+              strokeWidth={1.8}
+            />
+            {category}
+          </span>
+        )}
+
+        {requester && (
+          <span className="inline-flex items-center gap-1.5">
+            <Building2
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500"
+              strokeWidth={1.8}
+            />
+            {requester}
+          </span>
+        )}
         {location && (
           <span className="inline-flex items-center gap-1.5">
             <MapPin

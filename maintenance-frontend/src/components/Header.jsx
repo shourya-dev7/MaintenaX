@@ -1,6 +1,6 @@
 import { Bell, Moon, Search, Sun } from "lucide-react";
 
-function Header({ isDarkMode, onToggleTheme }) {
+function Header({ isDarkMode, onToggleTheme, onNavigate, searchQuery, onSearchChange }) {
   return (
     <header className="flex min-h-20 items-center justify-between gap-6 border-b border-slate-200 bg-white px-8 py-4 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 max-md:px-5 max-sm:gap-3 max-sm:px-4">
       <div className="min-w-0">
@@ -23,6 +23,8 @@ function Header({ isDarkMode, onToggleTheme }) {
             type="search"
             placeholder="Search..."
             aria-label="Search"
+            value={searchQuery}
+            onChange={(event) => onSearchChange?.(event.target.value)}
             className="h-10 w-56 rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none transition-colors duration-200 placeholder:text-slate-400 focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900"
           />
         </label>
@@ -45,6 +47,7 @@ function Header({ isDarkMode, onToggleTheme }) {
         <button
           type="button"
           aria-label="Notifications"
+          onClick={() => onNavigate?.("notifications")}
           className="relative flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 transition-colors duration-200 hover:bg-slate-50 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100"
         >
           <Bell aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} />
@@ -76,3 +79,6 @@ function Header({ isDarkMode, onToggleTheme }) {
 }
 
 export default Header;
+
+
+
