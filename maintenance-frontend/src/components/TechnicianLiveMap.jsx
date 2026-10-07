@@ -10,12 +10,16 @@ const BASE_TECHS = [
 
 const mercY = lat => Math.log(Math.tan(Math.PI/4 + lat*Math.PI/360));
 
-export default function TechnicianLiveMap({ onShowGraph, showGraph = false }){
+export default function TechnicianLiveMap({ onShowGraph, showGraph = false, tasks = [] }){
   const [location,setLocation]=useState(null);
   const [error,setError]=useState("");
   const [asking,setAsking]=useState(false);
   const [tick,setTick]=useState(0);
   const [history,setHistory]=useState([]);
+  const [graphOpen, setGraphOpen] = useState(showGraph);
+  useEffect(() => {
+    setGraphOpen(showGraph);
+  }, [showGraph]);
   const [draggedPins,setDraggedPins]=useState({});
   const [draggingId,setDraggingId]=useState(null);
   const mapRef=useRef(null);
@@ -62,13 +66,42 @@ export default function TechnicianLiveMap({ onShowGraph, showGraph = false }){
     });
   },[location,bounds,tick]);
 
-  useEffect(()=>{
-    if(!pins.length) return;
-    const active=pins.filter(p=>p.status!=="Offline").length;
-    const travelling=pins.filter(p=>p.status==="Travelling").length;
-    const avg=Math.round(pins.reduce((s,p)=>s+p.distance,0)/pins.length);
-    setHistory(h=>[...h,{label:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}),active,travelling,avg}].slice(-18));
-  },[tick]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!pins.length) return;
+
+    const active = pins.filter((p) => p.status !== "Offline").length;
+    const travelling = pins.filter((p) => p.status === "Travelling").length;
+    const avg = Math.round(
+      pins.reduce((sum, p) => sum + p.distance, 0) / pins.length
+    );
+
+    const workload = pins.reduce((total, technician) => {
+      const technicianTasks = tasks.filter(
+        (task) =>
+          task.technician === technician.name ||
+          task.assignedTechnician === technician.name,
+      );
+
+      return total + technicianTasks.length;
+    }, 0);
+
+    setHistory((history) =>
+      [
+        ...history,
+        {
+          label: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+          active,
+          travelling,
+          avg,
+          workload,
+        },
+      ].slice(-18)
+    );
+  }, [pins, tasks]);
 
   const beginPinDrag=(event,id)=>{
     event.preventDefault();
@@ -112,13 +145,10 @@ export default function TechnicianLiveMap({ onShowGraph, showGraph = false }){
     history.length > 1
       ? history
           .map((h, i) => {
-            const servicing = Math.max(
-              1,
-              Math.round(h.active * 2 + h.travelling)
-            );
+            const servicing = h.workload + h.travelling * 0.5 + Math.sin(i * 1.7) * 0.8;
 
             const x = (i / (history.length - 1)) * 100;
-            const y = 62 - Math.min(servicing * 2, 22);
+            const y = 70 - servicing * 8;
 
             return `${x},${y}`;
           })
@@ -132,6 +162,17 @@ export default function TechnicianLiveMap({ onShowGraph, showGraph = false }){
         <p className="mt-1 text-xs text-slate-500">Operational map, moving technician telemetry and field activity trend</p>
       </div>
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            setGraphOpen(true);
+            onShowGraph?.(true);
+          }}
+          className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-cyan-200 bg-cyan-50 px-3 text-xs font-bold text-cyan-700 hover:bg-cyan-100 dark:border-cyan-900 dark:bg-cyan-950/40 dark:text-cyan-300 dark:hover:bg-cyan-950"
+        >
+          <Activity className="h-4 w-4" />
+          Line Overview
+        </button>
         {location&&<a href={openMapUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900"><ExternalLink className="h-4 w-4"/>Open map</a>}
         {Object.keys(draggedPins).length>0&&<button onClick={()=>{setDraggedPins({});localStorage.removeItem("maintenax-dragged-field-pins");}} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900">Reset pins</button>}
         <button onClick={ask} disabled={asking} className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-cyan-500 px-4 text-sm font-bold text-slate-950 hover:bg-cyan-400 disabled:opacity-50"><LocateFixed className="h-4 w-4"/>{asking?"Locating…":location?"Refresh GPS":"Allow location"}</button>
@@ -173,48 +214,120 @@ export default function TechnicianLiveMap({ onShowGraph, showGraph = false }){
         <div className="border-b border-slate-200 p-4 dark:border-slate-800">
           <div className="mb-3 flex items-center justify-between"><div className="flex items-center gap-2"><Activity className="h-4 w-4 text-cyan-500"/><b className="text-sm text-slate-900 dark:text-white">Field activity</b></div><span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Updating</span></div>
           <div className="grid grid-cols-3 gap-2 text-center"><div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-900"><b className="block text-lg text-slate-900 dark:text-white">{pins.length}</b><span className="text-[10px] text-slate-500">Active</span></div><div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-900"><b className="block text-lg text-slate-900 dark:text-white">{pins.filter(p=>p.status==='Travelling').length}</b><span className="text-[10px] text-slate-500">Travelling</span></div><div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-900"><b className="block text-lg text-slate-900 dark:text-white">{pins.length?Math.round(pins.reduce((s,p)=>s+p.distance,0)/pins.length):0}m</b><span className="text-[10px] text-slate-500">Avg range</span></div></div>
-          {showGraph && (
+          {graphOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm">
               <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-950">
-                <div className="flex items-center justify-between">
+                
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                      Live servicing graph
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                      </span>
+
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                        Live operational health
+                      </h3>
+                    </div>
+
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                      Technician servicing activity • rolling live window
+                      Updating automatically from current field activity.
                     </p>
                   </div>
 
                   <button
                     type="button"
-                    onClick={() => onShowGraph?.(false)}
-                    className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                    onClick={() => {
+                      setGraphOpen(false);
+                      onShowGraph?.(false);
+                    }}
+                    className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900"
                   >
                     Close
                   </button>
                 </div>
 
-                <div className="mt-5 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+                <div className="mt-5 flex items-end justify-between">
+                  <div>
+                    <span className="text-4xl font-black text-slate-900 dark:text-white">
+                      {history.length
+                        ? Math.max(
+                            0,
+                            Math.min(
+                              100,
+                              Math.round(
+                                100 -
+                                  (history.at(-1).avg / 700) * 35 -
+                                  history.at(-1).workload * 3
+                              )
+                            )
+                          )
+                        : 92}
+                      %
+                    </span>
+                  </div>
+
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <Radio className="h-3 w-3" />
+                    Live
+                  </span>
+                </div>
+
+                <div className="mt-4 h-56 rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900">
                   <svg
-                    viewBox="0 0 100 50"
+                    viewBox="0 0 100 90"
                     preserveAspectRatio="none"
-                    className="h-64 w-full"
+                    className="h-full w-full overflow-visible"
                   >
+                    <line
+                      x1="0"
+                      y1="82"
+                      x2="100"
+                      y2="82"
+                      stroke="currentColor"
+                      className="text-slate-300 dark:text-slate-700"
+                      strokeWidth=".7"
+                    />
+
+                    <line
+                      x1="0"
+                      y1="52"
+                      x2="100"
+                      y2="52"
+                      stroke="currentColor"
+                      className="text-slate-200 dark:text-slate-800"
+                      strokeWidth=".5"
+                      strokeDasharray="2 2"
+                    />
+
                     <polyline
                       points={chartPoints}
                       fill="none"
                       stroke="currentColor"
                       className="text-cyan-500"
-                      strokeWidth="2.5"
+                      strokeWidth="2.3"
                       vectorEffect="non-scaling-stroke"
                     />
-                  </svg>
 
-                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                    <span className="h-2.5 w-2.5 rounded-full bg-cyan-500" />
-                    Live servicing activity
-                  </div>
+                    <circle
+                      cx="100"
+                      cy={
+                        history.length
+                          ? 82 - (history.at(-1).avg / 700) * 62
+                          : 58
+                      }
+                      r="2.2"
+                      fill="currentColor"
+                      className="text-cyan-500"
+                    />
+                  </svg>
+                </div>
+
+                <div className="mt-2 flex items-center justify-between text-[10px] font-semibold text-slate-400">
+                  <span>Earlier</span>
+                  <span>Operational health</span>
+                  <span>Now</span>
                 </div>
               </div>
             </div>

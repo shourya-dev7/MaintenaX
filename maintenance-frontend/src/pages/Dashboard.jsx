@@ -164,6 +164,7 @@ function Dashboard({
   onNavigate,
   onLogout,
   userName,
+  tasks,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showLiveGraph, setShowLiveGraph] = useState(false);
@@ -207,6 +208,7 @@ function Dashboard({
           onNavigate={onNavigate}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          userName={userName}
         />
 
         <main className="mx-auto max-w-[1600px] space-y-8 p-8 max-lg:p-6 max-sm:p-4">
@@ -257,6 +259,7 @@ function Dashboard({
     <TechnicianLiveMap
       onShowGraph={(value = true) => setShowLiveGraph(value)}
       showGraph={showLiveGraph}
+      tasks={tasks}
     />
   </div>
 </div>

@@ -1,6 +1,13 @@
 import { Bell, Moon, Search, Sun } from "lucide-react";
 
-function Header({ isDarkMode, onToggleTheme, onNavigate, searchQuery, onSearchChange }) {
+function Header({
+  isDarkMode,
+  onToggleTheme,
+  onNavigate,
+  searchQuery,
+  onSearchChange,
+  userName,
+}) {
   return (
     <header className="flex min-h-20 items-center justify-between gap-6 border-b border-slate-200 bg-white px-8 py-4 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 max-md:px-5 max-sm:gap-3 max-sm:px-4">
       <div className="min-w-0">
@@ -62,11 +69,11 @@ function Header({ isDarkMode, onToggleTheme, onNavigate, searchQuery, onSearchCh
             aria-hidden="true"
             className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700"
           >
-            AM
+            {userName?.slice(0, 2).toUpperCase() || "US"}
           </div>
           <div className="max-sm:hidden">
             <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-              Alex Morgan
+              {userName || "User"}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Facility Manager

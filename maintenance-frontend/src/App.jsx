@@ -445,6 +445,7 @@ function App() {
       onNavigate={setCurrentPage}
       onLogout={handleLogout}
       userName={currentUser}
+      tasks={tasks}
     />
   );
 }
