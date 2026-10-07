@@ -1,11 +1,41 @@
+import { useEffect, useState } from "react";
+
+import { registerEventHandlers } from "./integration/eventHandlers";
+import { loadMockEvents } from "./integration/integrationAdapter";
+
+import Dashboard from "./pages/Dashboard";
+import CreateRequest from "./pages/CreateRequest";
+import RequestDetails from "./pages/RequestDetails";
+
 function App() {
+  const [currentPage, setCurrentPage] = useState("dashboard");
+
+  useEffect(() => {
+    const cleanup = registerEventHandlers();
+
+    loadMockEvents();
+
+    return cleanup;
+  }, []);
+
+  if (currentPage === "request-details") {
+    return <RequestDetails />;
+  }
+
+  if (currentPage === "create-request") {
+    return (
+      <CreateRequest
+        onBack={() => setCurrentPage("dashboard")}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">
-        MaintenaX
-      </h1>
-    </div>
-  )
+    <Dashboard
+      onCreateRequest={() => setCurrentPage("create-request")}
+      onRequestDetails={() => setCurrentPage("request-details")}
+    />
+  );
 }
 
-export default App
+export default App;
