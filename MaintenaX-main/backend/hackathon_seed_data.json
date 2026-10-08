@@ -1,0 +1,295 @@
+{
+  "sites": [
+    {
+      "site_id": "S01",
+      "name": "Site A",
+      "location": "Chennai",
+      "latitude": 12.8406,
+      "longitude": 80.1534
+    },
+    {
+      "site_id": "S02",
+      "name": "Site B",
+      "location": "Sriperumbudur",
+      "latitude": 12.9675,
+      "longitude": 79.9417
+    },
+    {
+      "site_id": "S03",
+      "name": "Site C",
+      "location": "Oragadam",
+      "latitude": 12.836,
+      "longitude": 80.005
+    }
+  ],
+  "machines": [
+    {
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "site_id": "S01",
+      "status": "FAULT",
+      "criticality": 9
+    },
+    {
+      "machine_id": "M207",
+      "machine_type": "CNC_MACHINE",
+      "site_id": "S01",
+      "status": "OPERATIONAL",
+      "criticality": 7
+    },
+    {
+      "machine_id": "M208",
+      "machine_type": "HYDRAULIC_PRESS",
+      "site_id": "S02",
+      "status": "OPERATIONAL",
+      "criticality": 8
+    },
+    {
+      "machine_id": "M318",
+      "machine_type": "INDUSTRIAL_PUMP",
+      "site_id": "S03",
+      "status": "OPERATIONAL",
+      "criticality": 6
+    }
+  ],
+  "technicians": [
+    {
+      "technician_id": "T01",
+      "name": "Rahul Sharma",
+      "skills": [
+        "HYDRAULICS",
+        "MECHANICAL"
+      ],
+      "site_id": "S01",
+      "availability": "AVAILABLE",
+      "active_jobs": 1,
+      "experience_years": 6
+    },
+    {
+      "technician_id": "T02",
+      "name": "Arjun Mehta",
+      "skills": [
+        "HYDRAULICS",
+        "CNC"
+      ],
+      "site_id": "S01",
+      "availability": "AVAILABLE",
+      "active_jobs": 0,
+      "experience_years": 4
+    },
+    {
+      "technician_id": "T03",
+      "name": "Vikram Rao",
+      "skills": [
+        "HYDRAULICS",
+        "PUMPS"
+      ],
+      "site_id": "S02",
+      "availability": "AVAILABLE",
+      "active_jobs": 0,
+      "experience_years": 5
+    },
+    {
+      "technician_id": "T04",
+      "name": "Meera Iyer",
+      "skills": [
+        "ELECTRICAL",
+        "CNC"
+      ],
+      "site_id": "S01",
+      "availability": "AVAILABLE",
+      "active_jobs": 0,
+      "experience_years": 7
+    },
+    {
+      "technician_id": "T05",
+      "name": "Karan Singh",
+      "skills": [
+        "MECHANICAL",
+        "PUMPS"
+      ],
+      "site_id": "S03",
+      "availability": "BUSY",
+      "active_jobs": 2,
+      "experience_years": 3
+    }
+  ],
+  "inventory": [
+    {
+      "part_id": "PUMP-12",
+      "part_name": "Hydraulic Pump",
+      "site_id": "S01",
+      "available_quantity": 1
+    },
+    {
+      "part_id": "PUMP-12",
+      "part_name": "Hydraulic Pump",
+      "site_id": "S02",
+      "available_quantity": 1
+    },
+    {
+      "part_id": "PUMP-12",
+      "part_name": "Hydraulic Pump",
+      "site_id": "S03",
+      "available_quantity": 3
+    },
+    {
+      "part_id": "VALVE-07",
+      "part_name": "Pressure Control Valve",
+      "site_id": "S01",
+      "available_quantity": 2
+    },
+    {
+      "part_id": "CNC-BR04",
+      "part_name": "CNC Spindle Bearing",
+      "site_id": "S01",
+      "available_quantity": 1
+    }
+  ],
+  "service_requests": [
+    {
+      "request_id": "SR501",
+      "machine_id": "M104",
+      "site_id": "S01",
+      "fault_type": "PRESSURE_LOSS",
+      "description": "Sudden hydraulic pressure loss",
+      "required_skill": "HYDRAULICS",
+      "required_parts": [
+        "PUMP-12"
+      ],
+      "priority": "CRITICAL",
+      "sla_minutes": 120,
+      "elapsed_minutes": 10,
+      "status": "APPROVED",
+      "assigned_technician": null
+    },
+    {
+      "request_id": "SR502",
+      "machine_id": "M207",
+      "site_id": "S01",
+      "fault_type": "SPINDLE_VIBRATION",
+      "description": "Abnormal spindle vibration",
+      "required_skill": "CNC",
+      "required_parts": [
+        "CNC-BR04"
+      ],
+      "priority": "HIGH",
+      "sla_minutes": 240,
+      "elapsed_minutes": 70,
+      "status": "ASSIGNED",
+      "assigned_technician": "T01"
+    },
+    {
+      "request_id": "SR503",
+      "machine_id": "M318",
+      "site_id": "S03",
+      "fault_type": "PUMP_OVERHEATING",
+      "description": "Pump temperature above safe limit",
+      "required_skill": "PUMPS",
+      "required_parts": [],
+      "priority": "MEDIUM",
+      "sla_minutes": 360,
+      "elapsed_minutes": 80,
+      "status": "IN_PROGRESS",
+      "assigned_technician": "T05"
+    }
+  ],
+  "service_history": [
+    {
+      "history_id": "H001",
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T01",
+      "resolution_minutes": 42,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H002",
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T01",
+      "resolution_minutes": 45,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H003",
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T02",
+      "resolution_minutes": 61,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H004",
+      "machine_id": "M208",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T01",
+      "resolution_minutes": 49,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H005",
+      "machine_id": "M208",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T02",
+      "resolution_minutes": 66,
+      "sla_breached": false,
+      "repeat_failure": true
+    },
+    {
+      "history_id": "H006",
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "VALVE_FAILURE",
+      "technician_id": "T03",
+      "resolution_minutes": 54,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H007",
+      "machine_id": "M208",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "VALVE_FAILURE",
+      "technician_id": "T03",
+      "resolution_minutes": 51,
+      "sla_breached": false,
+      "repeat_failure": false
+    },
+    {
+      "history_id": "H008",
+      "machine_id": "M104",
+      "machine_type": "HYDRAULIC_PRESS",
+      "fault_type": "PRESSURE_LOSS",
+      "technician_id": "T03",
+      "resolution_minutes": 55,
+      "sla_breached": false,
+      "repeat_failure": false
+    }
+  ],
+  "active_assignments": [
+    {
+      "assignment_id": "A001",
+      "request_id": "SR502",
+      "technician_id": "T01",
+      "estimated_remaining_minutes": 90
+    },
+    {
+      "assignment_id": "A002",
+      "request_id": "SR503",
+      "technician_id": "T05",
+      "estimated_remaining_minutes": 120
+    }
+  ],
+  "exceptions": [],
+  "decision_memory": []
+}
