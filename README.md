@@ -25,6 +25,37 @@ npm run dev
 Frontend runs at:
 http://localhost:5173
 
+3. Database
+The project uses SQLite.
+Run the seed command before starting the backend:
+python -m app.seed
+
+This populates:
+- Sites
+- Machines
+- Technicians
+- Inventory
+- Service Requests
+- Service History
+- Active Assignments
+
+```md
+## 🏗️ Architecture
+
+Frontend (React + Vite)
+        ↓
+FastAPI Backend
+        ↓
+Intelligence Layer
+        ├── Technician Compatibility
+        ├── ML Repair-Time Prediction
+        ├── Ripple-Effect Simulation
+        ├── SLA Risk Analysis
+        ├── Failure Recovery
+        └── Counterfactual Decision Analysis
+        ↓
+SQLite Database
+
 # 
 
 # \### Smart Maintenance Management Platform
