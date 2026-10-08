@@ -190,7 +190,7 @@ Verification
        │
        ▼
 Audit History
-
+```
 
 ## System Architecture
 ┌──────────────────────────────┐
@@ -236,6 +236,8 @@ Audit History
 ┌──────────────────────────────┐
 │ Completion & Verification    │
 └──────────────────────────────┘
+
+```
 
 ## Technology Stack
 Frontend
