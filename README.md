@@ -1,5 +1,30 @@
 # \# MaintenaX
 
+
+## 🚀 Setup & Run
+
+### 1. Backend
+
+```bash
+cd MaintenaX-main/backend
+
+python -m pip install -r requirements.txt
+
+python -m app.seed
+
+python -m uvicorn app.main:app --reload
+
+2. Frontend
+Open a new terminal:
+cd MaintenaX-main/maintenance-frontend
+
+npm install
+
+npm run dev
+
+Frontend runs at:
+http://localhost:5173
+
 # 
 
 # \### Smart Maintenance Management Platform
