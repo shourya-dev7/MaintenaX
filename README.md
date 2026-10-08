@@ -1,3 +1,8 @@
+### Smart Maintenance Management & Decision Support Platform
+
+[**🚀 Live Demo — MaintenaX**](https://maintena-x.vercel.app/)
+
+
 # MaintenaX
 
 ### Smart Maintenance Management & Decision Support Platform
