@@ -191,7 +191,8 @@ Verification
        ▼
 Audit History
 
-System Architecture
+
+## System Architecture
 ┌──────────────────────────────┐
 │        User / Frontend       │
 │          React + Vite        │
@@ -236,7 +237,7 @@ System Architecture
 │ Completion & Verification    │
 └──────────────────────────────┘
 
-Technology Stack
+## Technology Stack
 Frontend
 - React
 - Vite
@@ -268,7 +269,7 @@ Database
 Authentication
 - Supabase Authentication
 - Google OAuth
-Project Structure
+## Project Structure
 MaintenaX/
 │
 ├── backend/
@@ -308,7 +309,7 @@ MaintenaX/
 ├── .gitignore
 └── README.md
 
-Getting Started
+## Getting Started
 Prerequisites
 Make sure the following are installed:
 - Git
@@ -339,7 +340,6 @@ To enable Google Sign-In:
 4. Configure the appropriate redirect URLs in Supabase.
 5. Add the Supabase URL and publishable key to maintenance-frontend/.env.
 Security: Never commit .env files or secret credentials to GitHub.
-
 3. Backend Setup
 Open a terminal in the project directory.
 cd backend
@@ -387,71 +387,7 @@ Vite will display the local development URL.
 Typically:
 http://localhost:5173
 
-Running the Full Application
-MaintenaX requires both the backend and frontend development servers.
-Terminal 1 — Backend
-cd backend
-
-# Windows PowerShell
-.\venv\Scripts\Activate.ps1
-
-python -m uvicorn app.main:app --reload
-
-Terminal 2 — Frontend
-cd maintenance-frontend
-
-npm install
-npm run dev
-
-Then open the frontend URL provided by Vite.
-Database
-The current MVP uses SQLite for local development.
-The database is automatically created by the backend and populated using:
-python -m app.seed
-
-The seed data provides a reproducible development environment for testing the maintenance workflow and intelligence layer.
-For production deployment, PostgreSQL can be introduced as the primary database.
-Validation & Testing
-The platform can be validated through:
-- Functional API testing
-- Mock-data workflow testing
-- End-to-end maintenance lifecycle testing
-- Frontend authentication testing
-- Google OAuth testing
-- Maintenance request workflow testing
-- Technician assignment testing
-- Technician reassignment testing
-- Exception handling testing
-- Recovery workflow testing
-- Intelligence and recommendation testing
-Project Scope
-Included
-- Service request lifecycle
-- Technician management
-- Resource management
-- Request validation
-- Technician recommendation
-- Technician assignment
-- Technician reassignment
-- Maintenance status tracking
-- Completion and verification
-- Dashboard
-- Audit history
-- Exception handling
-- Recovery workflows
-- Intelligence-based decision support
-- ML-based repair-time prediction
-- Ripple-effect simulation
-- Counterfactual analysis
-Current Limitations
-The current hackathon MVP does not include:
-- Real IoT integration
-- Production-scale deployment
-- Large-scale stress testing
-- Dedicated mobile application
-- External enterprise integrations
-- Production-grade ML training infrastructure
-Future Roadmap
+## Future Roadmap
 Potential extensions include:
 - Real-time notifications
 - Advanced operational analytics
@@ -465,35 +401,7 @@ Potential extensions include:
 - Mobile applications
 - Enterprise system integrations
 - More advanced intelligence models
-Operational Risks & Fallbacks
-Technician Unavailability
-Risk: An assigned technician becomes unavailable.
-Fallback: Reassignment and recovery workflow.
-Spare-Part Shortage
-Risk: A required spare part is unavailable.
-Fallback: Exception handling and alternative assignment/recovery.
-API Failure
-Risk: Backend services become temporarily unavailable.
-Fallback: Manual operational updates and exception logging.
-Incorrect Recommendation
-Risk: A recommended technician may not be suitable for the specific situation.
-Fallback: Supervisor-controlled manual assignment or reassignment.
-Expected Impact
-MaintenaX is designed to reduce manual coordination by centralizing maintenance workflows and providing decision support for technician and resource assignment.
-The platform aims to improve:
-- Assignment quality
-- Operational visibility
-- Response coordination
-- Resource utilization
-- Exception handling
-- Maintenance traceability
-- SLA awareness
-Any percentage improvement in operational efficiency should be validated using real production data. The current project does not claim a production-validated performance improvement.
-
-Why MaintenaX?
-Traditional maintenance coordination often focuses on a simple question:
-"Which technician is available?"
-
+## MaintenaX Decision Support Approach
 MaintenaX takes a broader approach.
 The platform considers:
 - Who has the required skills?
@@ -505,7 +413,7 @@ The platform considers:
 - How will this assignment affect other ongoing work?
 - What happens if the assigned technician becomes unavailable?
 This turns MaintenaX from a basic maintenance tracking application into a maintenance decision-support platform.
-Team
+## Team
 Team 404:NOT FOUND
 Member	ID
 Sonhita Ghose	26BEC1406
@@ -514,17 +422,6 @@ Aishani Basu	26BCE1366
 Shourya Kumar Gupta	26BCE1304
 
 
-Running Cost
-The current prototype is designed to run locally using:
-- React
-- Vite
-- FastAPI
-- SQLite
-- Supabase Authentication
-No mandatory paid infrastructure is required for the basic local prototype.
-Current prototype infrastructure cost: ₹0
-Cloud hosting and production infrastructure can be introduced for future deployments.
-License
+## License
 This project was developed as a hackathon project by Team 404:NOT FOUND.
-
-**Important:** The outermost ` ```markdown ` and final ` ``` ` are just there so this entire README stays in **one copyable
+```
