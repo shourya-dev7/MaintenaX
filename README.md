@@ -70,7 +70,7 @@ The recommendation process considers:
 
 ### Technician Assignment & Reassignment
 
-Supervisors can assign technicians to maintenance requests and reassign work when operational conditions change.
+Supervisors can assign technicians to maintenance requests and reassign work with operational maintenance jobs.
 
 ### Resource Management
 
@@ -88,7 +88,7 @@ The system is designed to handle scenarios such as:
 
 ### Recovery Engine
 
-When an assigned technician or resource becomes unavailable, MaintenaX can evaluate alternative options and support recovery and reassignment.
+When an assigned technician or resource becomes busy or unavailable, MaintenaX can evaluate alternative options and support recovery and reassignment.
 
 ### Maintenance Tracking
 
